@@ -1,70 +1,47 @@
-# 🚀 Day 07 - AWS Route 53 (DNS Setup)
+# 🚀 Day 07 - AWS Route 53 (DNS + Live EC2 Mapping + HTTPS Ready)
 
 ![AWS](https://img.shields.io/badge/AWS-Route53-orange?style=for-the-badge&logo=amazonaws)
-![DNS](https://img.shields.io/badge/DNS-Concept-blue?style=for-the-badge)
-![DevOps](https://img.shields.io/badge/DevOps-Learning-green?style=for-the-badge)
-![Level](https://img.shields.io/badge/Level-Beginner_to_Pro-red?style=for-the-badge)
+![DNS](https://img.shields.io/badge/DNS-Production_Level-blue?style=for-the-badge)
+![DevOps](https://img.shields.io/badge/DevOps-Hands--On-green?style=for-the-badge)
+![SSL](https://img.shields.io/badge/SSL-HTTPS_Ready-red?style=for-the-badge)
 
 ---
 
-## 📌 What is DNS?
+## 📌 Project Overview
 
-DNS (Domain Name System) converts domain names into IP addresses.
+This project demonstrates how to:
 
-Example:
-google.com → 142.250.xxx.xxx
-
----
-
-## 🌍 How DNS Works
-
-1. User enters domain in browser
-2. Request goes to DNS resolver
-3. Resolver queries Root server
-4. Then TLD server (.com)
-5. Then Authoritative server
-6. Returns IP address
+- Configure DNS using AWS Route 53
+- Map a custom domain & subdomain to an EC2 instance
+- Deploy a static web page using Nginx
+- Enable HTTPS using Let's Encrypt (Certbot)
 
 ---
 
-## ☁️ What is AWS Route 53?
+## 🌐 Final Architecture
 
-Amazon Route 53 is a scalable DNS service.
-
-### Key Features:
-- Highly available
-- Fast DNS resolution
-- Domain registration
-- Health checks
+User → Route53 → EC2 (Nginx) → Website
 
 ---
 
-## 🧩 Components
+## 🧪 Live Demo Setup
 
-### 1. Hosted Zone
-Container for domain records
+### Domain:
+myroute.techwithdiwana.com
 
-### 2. Record Types
-- A → Domain to IP
-- CNAME → Domain to domain
-- MX → Mail
-- TXT → Verification
+### Server:
+EC2 Instance (Ubuntu)
 
-### 3. Routing Policies
-- Simple
-- Weighted
-- Latency
-- Failover
-- Geolocation
+### Web Server:
+Nginx
 
 ---
 
-## 🧪 Hands-on Demo (Micro Steps)
+## 🛠️ Step-by-Step Implementation
 
 ### Step 1: Launch EC2
-- Go to AWS Console
-- Launch instance
-- Copy Public IP
+- Create EC2 instance
+- Allow port 80 & 443 in Security Group
 
 ---
 
@@ -76,13 +53,13 @@ sudo apt install nginx -y
 
 ---
 
-### Step 3: Create Custom Page
+### Step 3: Deploy HTML Page
 ```bash
 sudo nano /var/www/html/index.html
 ```
 
 Paste:
-
+```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -90,51 +67,70 @@ Paste:
 <title>Tech With Diwana</title>
 </head>
 <body>
-
 <h1>Welcome to Tech With Diwana 🚀</h1>
 <p>Day 7 - Route 53 Demo</p>
-
 </body>
 </html>
+```
 
 ---
 
-### Step 4: Open Route 53
+### Step 4: Configure Route 53
 - Create Hosted Zone
-- Enter domain name
+- Update Nameservers in domain registrar
+- Create A record:
+
+```
+myroute → EC2 Public IP
+```
 
 ---
 
-### Step 5: Update Name Servers
-- Copy NS records
-- Update in domain provider
-
----
-
-### Step 6: Create A Record
-- Type: A
-- Value: EC2 Public IP
-
----
-
-### Step 7: Test
+### Step 5: Verify DNS
 Open:
-http://yourdomain.com
+http://myroute.techwithdiwana.com
 
 ---
 
-## 🎯 Real World Architecture
-
-Frontend → S3 + CloudFront  
-Backend → EC2 / Kubernetes  
-DNS → Route53  
-
----
-
-## 💬 Interview Answer
-
-"I deployed a static web app on EC2 and mapped it with Route 53 using A records and verified DNS propagation."
+### Step 6: Enable HTTPS (Free SSL)
+```bash
+sudo apt install certbot python3-certbot-nginx -y
+sudo certbot --nginx
+```
 
 ---
 
+## 🔐 HTTPS Result
 
+✔️ Secure connection enabled  
+✔️ Auto-renewal configured  
+
+---
+
+## 🎯 Key Learnings
+
+- DNS resolution flow
+- Route 53 hosted zones & records
+- Domain delegation via nameservers
+- EC2 + Nginx deployment
+- SSL using Let's Encrypt
+
+---
+
+## 💬 Interview Ready Answer
+
+"I configured Route 53 DNS to map a subdomain to an EC2 instance and secured it using Let's Encrypt SSL via Certbot."
+
+---
+
+## 🚀 Next Steps
+
+- Load Balancer + HTTPS (ACM)
+- Auto Scaling
+- Kubernetes deployment
+
+---
+
+## ⭐ Author
+
+Tech With Diwana
