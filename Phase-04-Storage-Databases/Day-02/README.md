@@ -1,125 +1,66 @@
-# 🚀 AWS DevOps Series - Day 9: S3 Production Grade Project (Real-Time App Deployment)
+# 🚀 AWS DevOps Series - Day 9: Static Website Hosting (S3 + CloudFront)
 
 ![AWS](https://img.shields.io/badge/AWS-S3-orange?style=for-the-badge&logo=amazonaws)
-![Project](https://img.shields.io/badge/Project-Production%20Demo-blue?style=for-the-badge)
-![Level](https://img.shields.io/badge/Level-Beginner%20to%20Advanced-green?style=for-the-badge)
+![CloudFront](https://img.shields.io/badge/AWS-CloudFront-blue?style=for-the-badge&logo=amazonaws)
+![DevOps](https://img.shields.io/badge/DevOps-Production-green?style=for-the-badge)
+![Level](https://img.shields.io/badge/Level-Advanced-purple?style=for-the-badge)
 
 ---
 
-# 🎯 Project Goal
+## 📌 Project Overview
 
-Deploy a real-world static web application on S3 like big companies.
-
----
-
-# 🧠 Real Company Use Case
-
-Companies use S3 for:
-- Hosting frontend apps (React/Angular)
-- Storing images/assets
-- Logs storage
-
-Example Flow:
-User → Browser → S3 (Static Website)
+Host a static website using Amazon S3 and deliver globally using CloudFront with HTTPS.
 
 ---
 
-# 📁 Project Structure
+## 🏗️ Architecture
 
-app/
- ├── index.html
- ├── style.css
+User → CloudFront → S3
 
 ---
 
-# ⚙️ STEP 1: Create Bucket (MICRO STEPS)
+## 🧑‍💻 Step-by-Step Setup
 
-1. Go to AWS Console
-2. Open S3
-3. Click Create Bucket
-4. Enter name (must be unique)
-5. Uncheck “Block Public Access”
-6. Create bucket
+### 1. Create S3 Bucket
+- Go to S3
+- Create bucket (unique name)
+- Disable Block Public Access
 
----
+### 2. Upload Files
+- Upload index.html and styles.css
 
-# 🌐 STEP 2: Enable Static Website Hosting
+### 3. Enable Static Hosting
+- Enable static website hosting
+- Index: index.html
 
-1. Open bucket
-2. Go to Properties
-3. Scroll → Static Website Hosting
-4. Enable
-5. Index document → index.html
-6. Save
+### 4. Add Bucket Policy
 
----
-
-# 📤 STEP 3: Upload Application
-
-1. Click Upload
-2. Select all files from app/
-3. Upload
-
----
-
-# 🔓 STEP 4: Make Files Public
-
-1. Select files
-2. Click Actions → Make Public
-
----
-
-# 🌍 STEP 5: Access Website
-
-Go to:
-Bucket → Properties → Website Endpoint
-
----
-
-# 🔁 STEP 6: Enable Versioning (Production)
-
-```bash
-aws s3api put-bucket-versioning \
---bucket YOUR_BUCKET_NAME \
---versioning-configuration Status=Enabled
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::YOUR_BUCKET_NAME/*"
+    }
+  ]
+}
 ```
 
----
-
-# ♻️ STEP 7: Lifecycle (Cost Optimization)
-
-Move old logs → Glacier after 30 days
-
----
-
-# 🌍 STEP 8: Replication (DR Setup)
-
-Create second bucket → enable replication
+### 5. CloudFront Setup
+- Create distribution
+- Origin: S3
+- HTTPS redirect
+- Default root object: index.html
 
 ---
 
-# 🚀 CLI DEPLOYMENT (DEVOPS WAY)
+## 💣 Interview Line
 
-```bash
-aws s3 sync ./app s3://YOUR_BUCKET_NAME
-```
+We use S3 for hosting and CloudFront for CDN and HTTPS.
 
 ---
 
-# 📊 PRODUCTION BEST PRACTICES
-
-- Use CloudFront (CDN)
-- Enable HTTPS
-- Use versioning
-- Use lifecycle
-- Enable logging
-
----
-
-# 🔥 FINAL THOUGHT
-
-This is how real companies host frontend apps using S3 🚀
-
----
-
-## ⭐ Tech With Diwana
+🚀 Tech With Diwana
