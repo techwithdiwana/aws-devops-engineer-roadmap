@@ -1,0 +1,1 @@
+print("Hello CodeCommit Ultimate")
