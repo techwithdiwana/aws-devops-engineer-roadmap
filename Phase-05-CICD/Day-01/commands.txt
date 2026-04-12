@@ -1,3 +1,34 @@
+ssh-keygen -t rsa -b 4096
+
+Step 1: Confirm which public key uploaded
+
+-->> cat ~/.ssh/day13.pub
+
+Step 2: SSH config update
+
+Host git-codecommit.*.amazonaws.com
+  User "APKA26STT65767V"
+  IdentityFile ~/.ssh/day13
+------
+| Field        | Value                    |
+| ------------ | ------------------------ |
+| User         | SSH Key ID (AWS se)      |
+| IdentityFile |  private key (day13) |
+-----------------------------------------
+Step 3: Permission fix
+
+chmod 600 ~/.ssh/day13
+
+Step 4: Test
+
+ssh -v git-codecommit.ap-south-1.amazonaws.com
+
+Step 5: Clone
+
+git clone ssh://git-codecommit.ap-south-1.amazonaws.com/v1/repos/day13repo
+
+------------********--------------------------
+
 git clone <repo-url>
 git add .
 git commit -m "Initial commit"
