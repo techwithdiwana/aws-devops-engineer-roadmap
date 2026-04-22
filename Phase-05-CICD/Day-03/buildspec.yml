@@ -1,12 +1,14 @@
 version: 0.2
 
 phases:
-  install:
-    commands:
-      - echo Installing dependencies
   build:
     commands:
-      - echo Build started
+      - echo "Build started"
+
 artifacts:
   files:
-    - '**/*'
+    - appspec.yml
+    - server.js
+    - package.json
+    - start.sh
+  name: deploy.zip   
