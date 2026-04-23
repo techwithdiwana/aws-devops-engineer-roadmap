@@ -1,4 +1,4 @@
-# 🚀 AWS CodePipeline CI/CD (Day 16 - Tech With Diwana)
+# 🚀 Day 16 - AWS CodePipeline CI/CD (Tech With Diwana)
 
 ![AWS](https://img.shields.io/badge/AWS-CodePipeline-blue)
 ![CodeBuild](https://img.shields.io/badge/CodeBuild-Build-orange)
@@ -7,138 +7,122 @@
 
 ---
 
-## 🎯 Goal
-Automate full CI/CD pipeline using AWS CodePipeline integrating:
-CodeCommit → CodeBuild → CodeDeploy → EC2
+## 📌 Overview
+
+👉 This project continues from **Day 15 (CodeBuild + CodeDeploy working setup)**  
+👉 We are adding **CodePipeline on top of existing CI/CD**
+
+🔗 Base Setup (Day 15):
+https://github.com/techwithdiwana/aws-devops-engineer-roadmap/tree/main/Phase-05-CICD/Day-03
 
 ---
 
-## 🧱 Architecture Flow
+## 🎯 Goal
+
+Upgrade existing CI/CD:
+
+CodeCommit → CodeBuild → CodeDeploy → EC2  
+
+➡️ Into fully automated pipeline:
+
+CodeCommit → CodePipeline → CodeBuild → CodeDeploy → EC2 🚀
+
+---
+
+## 🧱 Architecture
+
 CodeCommit → CodePipeline → CodeBuild → CodeDeploy → EC2
 
 ---
 
-## ⚙️ Prerequisites
+## ⚙️ Prerequisites (From Day 15)
 
-1. AWS Account
-2. EC2 Instance (Amazon Linux 2)
-3. IAM Roles created
-4. CodeCommit Repo with app code
-5. CodeBuild project ready
-6. CodeDeploy Application + Deployment Group ready
-
----
-
-## 🔐 Step 1: IAM Roles
-
-### EC2 Role
-- AmazonS3ReadOnlyAccess
-- AmazonEC2RoleforAWSCodeDeploy
-
-### CodeDeploy Role
-- AWSCodeDeployRole
-
-### CodeBuild Role
-- AmazonS3FullAccess
-
-### CodePipeline Role
-- Auto create during pipeline setup
+✔ EC2 instance running  
+✔ CodeDeploy Agent installed  
+✔ CodeCommit repo with code  
+✔ CodeBuild project ready  
+✔ CodeDeploy App + Deployment Group ready  
+✔ Working deploy.zip generation  
 
 ---
 
-## 🖥️ Step 2: EC2 Setup
-
-- Launch EC2 (t2.micro)
-- Open ports: 22, 3000
-- Install CodeDeploy Agent
-
-Commands:
-```
-sudo yum update -y
-sudo yum install ruby -y
-cd /home/ec2-user
-wget https://aws-codedeploy-ap-south-1.s3.ap-south-1.amazonaws.com/latest/install
-chmod +x ./install
-sudo ./install auto
-sudo service codedeploy-agent start
-```
+# 🚀 Step-by-Step (Micro Steps)
 
 ---
 
-## 📦 Step 3: CodeCommit
+## 🔐 Step 1: IAM Role (Auto)
 
-- Create repository
-- Push code
-
-```
-git init
-git remote add origin <repo-url>
-git add .
-git commit -m "initial commit"
-git push origin main
-```
+1. Go to CodePipeline → Create pipeline  
+2. Enter pipeline name: `twd-pipeline`  
+3. Select:
+   ✔ Allow AWS to create service role  
 
 ---
 
-## 🔨 Step 4: CodeBuild
+## 📦 Step 2: Artifact Store
 
-- Create project
-- Use buildspec.yml
+1. Select:
+   ✔ Default location (IMPORTANT)  
 
-Example:
-```
-version: 0.2
-phases:
-  build:
-    commands:
-      - echo "Build started"
-artifacts:
-  files:
-    - '**/*'
-  name: deploy.zip
-```
+👉 AWS will auto create S3 bucket  
+👉 No manual config needed  
 
 ---
 
-## 🚀 Step 5: CodeDeploy
+## 🔗 Step 3: Source Stage
 
-- Create Application → EC2/On-prem
-- Create Deployment Group
-- Attach EC2 instance
+1. Provider → AWS CodeCommit  
+2. Repository → your repo  
+3. Branch → main  
 
----
-
-## 🔄 Step 6: Create CodePipeline
-
-1. Go to CodePipeline → Create pipeline
-2. Select **Build custom pipeline**
+✔ This will trigger pipeline on push  
 
 ---
 
-## 🔗 Step 7: Source Stage
+## 🔨 Step 4: Build Stage
 
-- Provider: CodeCommit
-- Repo: your repo
-- Branch: main
+1. Select:
+   ✔ Other build providers  
+2. Provider → AWS CodeBuild  
+3. Project → `my-twd-project`  
 
----
-
-## 🔨 Step 8: Build Stage
-
-- Provider: AWS CodeBuild
-- Select existing project
+✔ Reusing existing project from Day 15  
 
 ---
 
-## 🚀 Step 9: Deploy Stage
+## ❌ Step 5: Test Stage
 
-- Provider: AWS CodeDeploy
-- Application: TechWithDiwanaApp
-- Deployment Group: TechWithDiwanaDG
+👉 Click:
+✔ Skip test stage  
 
 ---
 
-## 🧪 Step 10: Trigger Pipeline
+## 🚀 Step 6: Deploy Stage
+
+1. Provider → AWS CodeDeploy  
+2. Region → ap-south-1  
+3. Input artifact → BuildArtifact  
+
+4. Application:
+   TechWithDiwanaApp  
+
+5. Deployment Group:
+   TechWithDiwanaDG  
+
+✔ Enable auto rollback  
+
+---
+
+## 🧪 Step 7: Create Pipeline
+
+👉 Click:
+✔ Create pipeline  
+
+---
+
+## ⚡ Step 8: Trigger Pipeline
+
+Run:
 
 ```
 git add .
@@ -148,32 +132,50 @@ git push origin main
 
 ---
 
-## 🌐 Access Application
+## 🔥 What Happens
 
-http://<EC2-PUBLIC-IP>:3000
+1. CodeCommit triggers pipeline  
+2. CodeBuild creates deploy.zip  
+3. CodeDeploy deploys to EC2  
+4. Application runs automatically  
 
 ---
 
-## 💥 Result
+## 🌐 Access App
 
-✔ Auto build  
-✔ Auto deploy  
+http://<EC2-IP>:3000
+
+---
+
+## 💥 Output
+
 ✔ Fully automated CI/CD  
+✔ Zero manual deployment  
+✔ Production-ready flow  
 
 ---
 
-## 🧠 Interview Line
+## 🧠 Interview Ready Answer
 
-“I implemented an end-to-end CI/CD pipeline using AWS CodePipeline integrating CodeCommit, CodeBuild, and CodeDeploy for automated deployments on EC2.”
+“I extended my CI/CD pipeline by integrating AWS CodePipeline to orchestrate CodeCommit, CodeBuild, and CodeDeploy, enabling fully automated deployments on EC2.”
 
 ---
 
-## ⚠️ Cost Note
+## ⚠️ Common Mistakes
 
-- CodePipeline: ~$1/month
-- CodeBuild: Free tier available
-- CodeDeploy: Free (EC2)
-- EC2: Depends on usage
+❌ Using Custom S3 instead of Default  
+❌ Selecting “Commands” instead of CodeBuild  
+❌ Wrong deploy provider (ECS instead of CodeDeploy)  
+❌ Missing appspec.yml in root  
+
+---
+
+## 💰 Cost
+
+- CodePipeline → ~$1/month  
+- CodeBuild → Free tier available  
+- CodeDeploy → Free  
+- EC2 → Based on usage  
 
 ---
 
