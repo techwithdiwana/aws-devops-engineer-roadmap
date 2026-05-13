@@ -1,0 +1,48 @@
+name: Production CI/CD to AWS EC2
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: production-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validate application
+        working-directory: app
+        run: |
+          npm install
+          node -c server.js
+
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Upload project to EC2
+        run: |
+          rsync -avz --delete ./ ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/ec2-user/github-actions-aws-ec2-production/
+
+      - name: Deploy application
+        run: |
+          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} '
+            cd /home/ec2-user/github-actions-aws-ec2-production
+            chmod +x scripts/deploy.sh
+            ./scripts/deploy.sh
+          '
+
+      - name: Health check
+        run: curl --retry 5 --retry-delay 5 http://${{ secrets.EC2_HOST }}:3000
