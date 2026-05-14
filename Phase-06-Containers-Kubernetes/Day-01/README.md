@@ -4,7 +4,7 @@
 Docker fundamentals
 
 ## YouTube Video
-Link your video here.
+https://www.youtube.com/playlist?list=PL9YnOxYKGRNOIvOSLh949gkhVrikcv24X
 
 ## Documentation
 Add commands, notes, and screenshots.
